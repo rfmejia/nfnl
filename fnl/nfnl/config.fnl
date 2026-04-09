@@ -124,6 +124,8 @@
         t path
         (core.get-in default-cfg path)))))
 
+(local notified {})
+
 (fn M.config-file-path? [path]
   (= config-file-name (fs.filename path)))
 
@@ -142,7 +144,11 @@
               (ok config)
               (if
                 (core.nil? config-source)
-                (values false (.. config-file-path " is not trusted, refusing to compile."))
+                (do
+                  (when (not (. notified config-file-path))
+                    (tset notified config-file-path true)
+                    (notify.info config-file-path " is not trusted yet. Open it and :trust to enable nfnl."))
+                  (values false nil))
 
                 (or (str.blank? config-source)
                     (= "{}" (str.trim config-source)))
@@ -156,7 +162,8 @@
             {: config
              : root-dir
              :cfg (M.cfg-fn config {: root-dir})}
-            (notify.error config)))))
+            (when config
+              (notify.error config))))))
 
     ;; Always default to an empty table for destructuring.
     {}))

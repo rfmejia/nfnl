@@ -63,6 +63,7 @@ M["cfg-fn"] = function(t, opts)
   end
   return _14_
 end
+local notified = {}
 M["config-file-path?"] = function(path)
   return (config_file_name == fs.filename(path))
 end
@@ -75,7 +76,12 @@ M["find-and-load"] = function(dir)
       local config_source = vim.secure.read(config_file_path)
       local ok, config
       if core["nil?"](config_source) then
-        ok, config = false, (config_file_path .. " is not trusted, refusing to compile.")
+        if not notified[config_file_path] then
+          notified[config_file_path] = true
+          notify.info(config_file_path, " is not trusted yet. Open it and :trust to enable nfnl.")
+        else
+        end
+        ok, config = false, nil
       elseif (str["blank?"](config_source) or ("{}" == str.trim(config_source))) then
         ok, config = true, {}
       else
@@ -84,7 +90,11 @@ M["find-and-load"] = function(dir)
       if ok then
         _15_ = {config = config, ["root-dir"] = root_dir, cfg = M["cfg-fn"](config, {["root-dir"] = root_dir})}
       else
-        _15_ = notify.error(config)
+        if config then
+          _15_ = notify.error(config)
+        else
+          _15_ = nil
+        end
       end
     else
       _15_ = nil

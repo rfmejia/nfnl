@@ -26,7 +26,7 @@ configuration, this can be blank if you wish to rely on the defaults for now.
 echo "{}" > .nfnl.fnl
 ```
 
-The first time you open a Fennel file under this directory you'll be prompted to
+The first time you write a Fennel file under this directory you'll be prompted to
 trust this configuration file since it's Fennel code that's executed on your
 behalf. You can put any Fennel code you want in this file, just be sure to
 return a table of configuration at the end.
@@ -171,18 +171,13 @@ modules or macros.
 
 ## Installation
 
-- [Lazy][lazy]: `{ "Olical/nfnl", ft = "fennel" }`
+- [Lazy][lazy]: `{ "Olical/nfnl" }`
 - [Plug][plug]: `Plug 'Olical/nfnl'`
 - [Packer][packer]: `use "Olical/nfnl"`
 
-[Lazy][lazy] will lazily load the plugin when you enter a Fennel file for the
-first time. There is no need to call `require("nfnl").setup()` right now, it's
-currently a noop but it may be used eventually. Some plugin managers support
-this function and will call it automatically.
-
-- Requires Neovim > v0.9.0.
-- Add the dependency to your plugin manager.
-- Add lazy loading rules on the Fennel filetype if you want.
+Requires Neovim >= v0.9.0. nfnl uses `ftplugin` to activate when you open a
+Fennel file, so there is no need to call `require("nfnl")` or add lazy loading
+rules. Just install it and it works.
 
 ## Standard library
 
@@ -408,16 +403,10 @@ which you can read about under the next header.
 
 ### Options
 
-nfnl's user experience can be configured by `g:nfnl#...` prefixed global variables which can also be set by `.setup()` like so:
-
-```lua
-require("nfnl").setup({ compile_on_write = false })
-```
-
-These options customise general behaviour of the plugin that aren't limited to a specific directory or project.
+nfnl can be configured with `g:nfnl#...` global variables.
 
 - `g:nfnl#compile_on_write`
-  Set to `false` to disable the automatic compilation on buffer write. You will then need to use the `:NfnlCompile*` commands to compile your Fennel into Lua.
+  Set to `false` to disable automatic compilation on buffer write. You will then need to use the `:NfnlCompile*` commands to compile your Fennel into Lua.
 
 ### API
 
