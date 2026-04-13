@@ -35,7 +35,8 @@
             (api.find-orphans
               {:dir root-dir
                :passive? true
-               : config : root-dir : cfg})))))))
+               : config : root-dir : cfg}))))))
+  nil)
 
 (fn M.setup-buffer [ev]
   "Called by ftplugin/fennel.fnl for every fennel buffer. Registers the

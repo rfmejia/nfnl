@@ -22,25 +22,25 @@ M["supported-path?"] = function(file_path)
   return (_2_ or false)
 end
 local function buf_write_callback(ev)
-  local path = fs["full-path"](ev.file)
-  if M["supported-path?"](path) then
-    local _let_4_ = config["find-and-load"](fs.basename(path))
-    local config0 = _let_4_.config
-    local root_dir = _let_4_["root-dir"]
-    local cfg = _let_4_.cfg
-    if config0 then
-      compile["into-file"]({["root-dir"] = root_dir, cfg = cfg, path = path, source = nvim["get-buf-content-as-string"](ev.buf)})
-      if cfg({"orphan-detection", "auto?"}) then
-        return api["find-orphans"]({dir = root_dir, ["passive?"] = true, config = config0, ["root-dir"] = root_dir, cfg = cfg})
+  do
+    local path = fs["full-path"](ev.file)
+    if M["supported-path?"](path) then
+      local _let_4_ = config["find-and-load"](fs.basename(path))
+      local config0 = _let_4_.config
+      local root_dir = _let_4_["root-dir"]
+      local cfg = _let_4_.cfg
+      if config0 then
+        compile["into-file"]({["root-dir"] = root_dir, cfg = cfg, path = path, source = nvim["get-buf-content-as-string"](ev.buf)})
+        if cfg({"orphan-detection", "auto?"}) then
+          api["find-orphans"]({dir = root_dir, ["passive?"] = true, config = config0, ["root-dir"] = root_dir, cfg = cfg})
+        else
+        end
       else
-        return nil
       end
     else
-      return nil
     end
-  else
-    return nil
   end
+  return nil
 end
 M["setup-buffer"] = function(ev)
   if (false ~= vim.g["nfnl#compile_on_write"]) then
